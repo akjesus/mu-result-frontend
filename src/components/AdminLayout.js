@@ -132,12 +132,6 @@ const AdminLayout = () => {
             <Box sx={{ color: "#2C2C78", fontWeight: 600, fontSize: 16 }}>
               {user?.name || "User"}
             </Box>
-            <Box sx={{ color: "#2C2C78", fontSize: 14 }}>
-              {user?.email}
-            </Box>
-            <Box sx={{ color: "#2C2C78", fontSize: 13 }}>
-              Role: {role}
-            </Box>
           </Box>
           <Button
             variant="contained"
