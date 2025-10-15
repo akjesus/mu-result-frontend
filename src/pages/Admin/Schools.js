@@ -41,10 +41,7 @@ export default function SchoolsPage() {
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
   useEffect(() => {
-    fetchSchools();
-  });
-
-  const fetchSchools = async () => {
+    const fetchSchools = async () => {
     try {
         const res = await getSchools();
         setSchools(res.data.schools)
@@ -54,6 +51,11 @@ export default function SchoolsPage() {
         showSnackbar(`${error.response?.data?.message || "Failed to fetch schools"}`, "error");
         console.log(error)
     }};
+    
+    fetchSchools();
+  }, []);
+
+  
 
   const onSubmit = async(data) => {
     try {

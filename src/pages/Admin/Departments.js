@@ -53,9 +53,14 @@ export default function DepartmentsPage() {
     setSnackbar({ ...snackbar, open: false });
   };
   useEffect(() => {
-    fetchDepartments();
+    getDepartments()
+      .then(res => {
+        showSnackbar("Departments Fetched!", "success");
+        setDepartments(res.data.departments)
+      })
+      .catch(err => console.error(err));
     fetchSchools();
-  });
+  }, []);
 
   function fetchDepartments() {
     getDepartments()
