@@ -29,7 +29,7 @@ import { Edit, Delete, UploadFile, Download, LockReset } from "@mui/icons-materi
 // Mock API imports (replace with actual API calls)
 import { getSchools, getLevels } from "../../api/schools";
 import { getDepartments } from "../../api/departments";
-import { getStudentsForDepartment, createStudent, resetStudentPassword } from "../../api/students";
+import { getStudentsForDepartment,  resetStudentPassword } from "../../api/students";
   // Reset password handler
   
 
@@ -102,7 +102,6 @@ export default function AdminStudents() {
 
   // Filters
   const [search, setSearch] = useState("");
-  const [filterDept, setFilterDept] = useState("");
   // Pagination
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -135,11 +134,11 @@ const handleResetPassword = async (student) => {
   useEffect(() => {
     getSchools().then((res) => setSchools(res.data.schools || res.data.faculties || [])).catch(console.error);
     getDepartments().then((res) => setDepartments(res.data.departments)).catch(console.error);
-    getLevels().
-    then((res)=> {
-      setLevels(res.data.levels)}
-    ).
-    catch(error=> showSnackbar(error.message, "error"))
+    getLevels()
+    .then((res)=> {
+      setLevels(res.data.levels)
+    })
+    .catch(error=> showSnackbar(error.message, "error"))
   }, []);
 
   // Fetch students only when button is clicked
@@ -148,7 +147,7 @@ const handleResetPassword = async (student) => {
       getStudentsForDepartment(selectedDepartment, selectedLevel)
         .then((res) => {
           setStudents(res.data.students || []);
-          setStudentsFetched(true);
+          setStudentsFetched(()=> !studentsFetched);
           showSnackbar(`Students fetched for ${res.data.students[0].department } Department`, "success");
         })
         .catch((error) => {
@@ -198,8 +197,7 @@ const handleResetPassword = async (student) => {
   // Filtered students
   const filteredStudents = students.filter(
     (s) =>
-      s.name.toLowerCase().includes(search.toLowerCase()) &&
-      (filterDept ? s.department === filterDept : true) 
+      s.name.toLowerCase().includes(search.toLowerCase()) 
   );
 
   return (

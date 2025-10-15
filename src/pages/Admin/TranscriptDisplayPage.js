@@ -47,15 +47,6 @@ export default function TranscriptDisplayPage() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [levelTab, setLevelTab] = useState(0);
 
-  // Convert score → grade + grade point
-  const getGrade = (score) => {
-    if (score >= 70) return { grade: "A", gp: 5 };
-    if (score >= 60) return { grade: "B", gp: 4 };
-    if (score >= 50) return { grade: "C", gp: 3 };
-    if (score >= 45) return { grade: "D", gp: 2 };
-    if (score >= 40) return { grade: "E", gp: 1 };
-    return { grade: "F", gp: 0 };
-  };
 
   // Bulk Download All Transcripts for current page
   const handleDownloadAll = () => {

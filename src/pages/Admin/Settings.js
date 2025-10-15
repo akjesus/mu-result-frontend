@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import { Typography, Box, Button, Dialog, DialogTitle, DialogContent, MenuItem, TextField, Snackbar, Alert } from "@mui/material";
 import { getSessions } from "../../api/schools";
 import { getSemestersForSession, setActiveSemester } from "../../api/sessions";

@@ -19,7 +19,6 @@ const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:5000/api";
 
 function Login() {
   const [email, setEmail] = useState("");
-  const [error, setError] = useState({ email: "", password: "" });
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -37,7 +36,6 @@ function Login() {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError({ email: "", password: "" });
 
     try {
       const res = await axios.post(`${BASE_URL}/auth/login`, {
@@ -65,16 +63,9 @@ function Login() {
     } catch (err) {
       if (err.response) {
         const message = err.response.data.message;
-
-        if (message.includes("Email")) {
-          setError((prev) => ({ ...prev, email: message }));
-        } else if (message.includes("password")) {
-          setError((prev) => ({ ...prev, password: message }));
-        } else {
-         showSnackbar(message, "error");
-        }
+        showSnackbar(message, "error");
       } else {
-       showSnackbar("Server Unreachable!", "error");
+        showSnackbar("Server Unreachable!", "error");
       }
     }
   };

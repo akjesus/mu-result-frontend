@@ -42,7 +42,7 @@ export default function SchoolsPage() {
 
   useEffect(() => {
     fetchSchools();
-  }, []);
+  });
 
   const fetchSchools = async () => {
     try {

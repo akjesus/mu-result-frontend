@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 
 export default function StudentProfile() {
-  const [profilePic, setProfilePic] = useState(null);
   const [profileData, setProfileData] = useState({})
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
       function showSnackbar(message, severity) {
@@ -26,7 +25,6 @@ export default function StudentProfile() {
       getProfile()
         .then(res => {
           setProfileData(res.data.user || []);
-          setProfilePic(res.data.user.photo);
         })
         .catch((error=> {
          showSnackbar(error.response.data.message, "error");
@@ -35,11 +33,9 @@ export default function StudentProfile() {
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    if (file) {
-      setProfilePic(URL.createObjectURL(file));
-    }
-  };
-
+    if (file) {return  };
+    // Future: Upload image to server and update profile picture}
+  }
   const handleSave = () => {
     // Later connect this with backend to update student profile
     showSnackbar("Profile saved successfully!", "success");

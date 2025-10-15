@@ -24,12 +24,7 @@ import {
 
 } from "@mui/material";
 import {  Visibility, Edit } from "@mui/icons-material";
-import Papa from "papaparse";
 import TranscriptModal from "./ResultModal";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import logo from "../../assets/maduka-logo.png"; // Ensure logo.png exists in assets
-import { addTranscriptHeader, addTranscriptFooter } from "../../utils/pdfHeader";
 import { getResultsByDepartment } from "../../api/results";
 import { getSessionsWithSemesters, getAllLevels } from "../../api/sessions";
 
@@ -44,7 +39,6 @@ export default function ResultDisplayPage() {
   const [showResults, setShowResults] = useState(false);
   const params = useParams();
   const id = params.id || params.departmentId;
-  const [file, setFile] = useState(null);
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [openResult, setOpenResult] = useState(false);
@@ -54,144 +48,6 @@ export default function ResultDisplayPage() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [levelTab, setLevelTab] = useState(0);
 
-  // Convert score → grade + grade point
-  const getGrade = (score) => {
-    if (score >= 70) return { grade: "A", gp: 5 };
-    if (score >= 60) return { grade: "B", gp: 4 };
-    if (score >= 50) return { grade: "C", gp: 3 };
-    if (score >= 45) return { grade: "D", gp: 2 };
-    if (score >= 40) return { grade: "E", gp: 1 };
-    return { grade: "F", gp: 0 };
-  };
-
-  // CSV Upload
-  const handleFileUpload = (e) => {
-    const uploadedFile = e.target.files[0];
-    setFile(uploadedFile);
-
-    Papa.parse(uploadedFile, {
-      header: true,
-      skipEmptyLines: true,
-      complete: (results) => {
-        const courseCodes = Object.keys(results.data[0]).filter(
-          (col) => col !== "mat_no"
-        );
-
-        const parsed = results.data.map((row, index) => {
-          let totalUnits = 0;
-          let totalPoints = 0;
-
-          const courseResults = courseCodes.map((code) => {
-            const score = Number(row[code]) || 0;
-            const gradeData = getGrade(score);
-            const unit = 3;
-            totalUnits += unit;
-            totalPoints += gradeData.gp * unit;
-
-            return {
-              code,
-              title: code,
-              unit,
-              score,
-              grade: gradeData.grade,
-              gp: gradeData.gp,
-            };
-          });
-
-          const gpa = totalUnits > 0 ? (totalPoints / totalUnits).toFixed(2) : 0;
-
-          return {
-            matNo: row.mat_no,
-            name: `Student ${index + 1}`,
-            faculty: "School of Science",
-            department: "Biochemistry",
-            level: "100",
-            session: "2023/2024",
-            results: courseResults,
-            totalUnits,
-            gpa,
-            cgpa: gpa,
-            comment: gpa < 2 ? "Probation" : "Good Standing",
-          };
-        });
-
-        setStudents(parsed);
-      },
-    });
-  };
-
-  // View Transcript
-  const handleView = (student) => {
-    setSelectedStudent(student);
-    setOpenResult(true);
-  };
-
-
-  // Download transcript PDF for a student
-  const handleDownloadTranscript = (student) => {
-    const doc = new jsPDF();
-    // Add logo and school name at the top
-    doc.addImage(logo, "PNG", 14, 10, 25, 25);
-    doc.setFontSize(18);
-    doc.text("Maduka University, Ekwegbe-Nsukka, Enugu State", 45, 25); // Replace with your school name
-    doc.setFontSize(16);
-    doc.text("Student Transcript", 14, 45);
-    doc.setFontSize(12);
-    doc.text(`Name: ${student.student_name}`, 14, 60);
-    doc.text(`Matric No: ${student.matric}`, 14, 67);
-    doc.text(`Department: ${student.department_name}`, 14, 74);
-    const tableColumn = ["Course Code", "Course Name", "Credit", "Score", "Grade"];
-    const tableRows = [];
-    if (Array.isArray(student.courses_info)) {
-      student.courses_info.forEach(course => {
-        tableRows.push([
-          course.code,
-          course.name,
-          course.credit_load,
-          course.total_score,
-          course.grade
-        ]);
-      });
-    }
-    autoTable(doc, {
-      startY: 85,
-      head: [tableColumn],
-      body: tableRows,
-    });
-    // GPA calculation
-    let totalCredits = 0;
-    let totalGradePoints = 0;
-    if (Array.isArray(student.courses_info)) {
-      student.courses_info.forEach(course => {
-        totalCredits += Number(course.credit_load);
-        let gp = 0;
-        switch (course.grade) {
-          case 'A': gp = 5; break;
-          case 'B': gp = 4; break;
-          case 'C': gp = 3; break;
-          case 'D': gp = 2; break;
-          case 'E': gp = 1; break;
-          case 'F': gp = 0; break;
-          default: gp = 0;
-        }
-        totalGradePoints += gp * Number(course.credit_load);
-      });
-    }
-    const gpa = totalCredits > 0 ? (totalGradePoints / totalCredits).toFixed(2) : '0.00';
-    const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : 120;
-    doc.text(`Total Credits: ${totalCredits}`, 14, finalY + 10);
-    doc.text(`Total Grade Points: ${totalGradePoints}`, 14, finalY + 17);
-    doc.text(`GPA: ${gpa}`, 14, finalY + 24);
-    // Registrar signature and date at the bottom of the page
-    const pageHeight = doc.internal.pageSize.getHeight();
-    doc.setFontSize(12);
-    doc.text("Registrar's Signature:", 14, pageHeight - 30);
-    doc.line(60, pageHeight - 30, 120, pageHeight - 30); // Signature line
-    const today = new Date();
-    const dateStr = today.toLocaleDateString();
-    doc.text(`Date: ${dateStr}`, 14, pageHeight - 20);
-    doc.save(`${student.matric}_transcript.pdf`);
-  };
 
   // Fetch sessions and levels on mount
   useEffect(() => {
