@@ -125,7 +125,7 @@ const AdminLayout = () => {
           </Button>
         </Box>
 
-        {/* User Info and Logout at top right */}
+        {/* User Info at top right */}
         <Box sx={{ position: "fixed", top: 16, right: 32, zIndex: 1400, display: "flex", alignItems: "center", gap: 2 }}>
           <AccountCircleIcon sx={{ fontSize: 40, color: "#2C2C78" }} />
           <Box sx={{ textAlign: "right" }}>
@@ -133,14 +133,7 @@ const AdminLayout = () => {
               {user?.name || "User"}
             </Box>
           </Box>
-          <Button
-            variant="contained"
-            startIcon={<Logout />}
-            onClick={handleLogout}
-            sx={{ bgcolor: "#2C2C78", ':hover': { bgcolor: "#1f1f5c" }, ml: 2 }}
-          >
-            Logout
-          </Button>
+          {/* Removed Logout button from top right */}
         </Box>
         {/* Sidebar */}
   <Drawer
