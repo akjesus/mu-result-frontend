@@ -47,7 +47,15 @@ export const createStudent = (data) => {
 
 export const updateStudent = (data) => {
     const token = localStorage.getItem('token');
-    return axios.patch(`${API_URL}/${data.id}`, data, {
+    return axios.put(`${API_URL}/${data.id}`, {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        email: data.email,
+        matric: data.matric,
+        department: data.department,
+        level: data.level,
+        username: data.username,
+    }, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

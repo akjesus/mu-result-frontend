@@ -46,9 +46,6 @@ export default function AdminStudents() {
       const res = await bulkUploadStudents(formData);
       if (res.status === 200) {
         showSnackbar(res.data?.message || 'Bulk upload successful!', "success");
-        setTimeout(() => {
-        window.location.reload();
-      }, 2500);
       } else {
         showSnackbar( 'Bulk upload failed!', "info");
       }
@@ -211,7 +208,7 @@ export default function AdminStudents() {
           }
           catch (error) { 
             console.log(error);
-            showSnackbar(error.response?.data?.message || error.message, "error");
+            showSnackbar(error.response?.data?.message?.message || error.response.data.message || error.message, "error");
           }
    
   };
