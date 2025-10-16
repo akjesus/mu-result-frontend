@@ -11,9 +11,9 @@ export default function AdminSettings() {
    const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
 
-  function showSnackbar(message, severity) {
+  const showSnackbar = (message, severity) => {
     setSnackbar({ open: true, message, severity });
-  }
+  };
 
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });

@@ -32,25 +32,29 @@ export default function AdminDashboard() {
   useEffect(() => {
     getDashboardStats()
       .then((res) => {
+        if (!res.data.success) {
+          showSnackbar(res.data.message || "Failed to fetch dashboard data", "info");
+          return; // Stop further processing
+        }
         // Assuming API returns an object with keys matching the stat keys
         const data = res.data.dashboardData;
         showSnackbar("Dashboard stats fetched successfully!", "success");
         // Map API response to stats array
         const statsArr = [
-          { key: "totalStudents", label: "Total Students", value: data.totalStudents, path: "/admin/students" },
-          { key: "totalCourses", label: "Total Courses", value: data.totalCourses, path: "/admin/courses" },
-          { key: "totalDepartments", label: "Departments", value: data.totalDepartments, path: "/admin/departments" },
-          { key: "avgCGPA", label: "Average CGPA", value: data.avgCGPA.toFixed(2) },
-          { key: "highestCGPA", label: "Highest CGPA", value: data.highestCGPA.toFixed(2) },
-          { key: "highestGPA", label: "Highest GPA", value: data.highestGPA.toFixed(2) },
-          { key: "lowestCGPA", label: "Lowest CGPA", value: data.lowestCGPA.toFixed(2) },
-          { key: "lowestGPA", label: "Lowest GPA", value: data.lowestGPA.toFixed(2) },
+          { key: "totalStudents", label: "Total Students", value: data?.totalStudents ? data.totalStudents : 0, path: "/admin/students" },
+          { key: "totalCourses", label: "Total Courses", value: data?.totalCourses ? data.totalCourses : 0, path: "/admin/courses" },
+          { key: "totalDepartments", label: "Departments", value: data?.totalDepartments ? data.totalDepartments : 0, path: "/admin/departments" },
+          { key: "avgCGPA", label: "Average CGPA", value: data?.avgCGPA ? data.avgCGPA.toFixed(2) : 0 },
+          { key: "highestCGPA", label: "Highest CGPA", value: data?.highestCGPA ? data.highestCGPA.toFixed(2) : 0 },
+          { key: "highestGPA", label: "Highest GPA", value: data?.highestGPA ? data.highestGPA.toFixed(2) : 0 },
+          { key: "lowestCGPA", label: "Lowest CGPA", value: data?.lowestCGPA ? data.lowestCGPA.toFixed(2) : 0 },
+          { key: "lowestGPA", label: "Lowest GPA", value: data?.lowestGPA ? data.lowestGPA.toFixed(2) : 0 },
         ];
         setStats(statsArr);
       })
       .catch((err) => {
-        console.log(err.response.data.message || err)
-        showSnackbar(`${err.response.data.message || "Failed to fetch dashboard stats"}`, "error");
+        console.log(err.response?.data?.message || err)
+        showSnackbar(`${err.response?.data?.message || "Failed to fetch dashboard stats"}`, "error");
       });
   }, []);
 

@@ -51,7 +51,8 @@ export default function ResultManagement() {
     const [selectedCourse, setSelectedCourse] = useState("");
     const [selectedSession, setSelectedSession] = useState("");
     const [selectedSemester, setSelectedSemester] = useState("");
-    const [catScore, setCatScore] = useState("");
+    const [firstQuizScore, setFirstQuizScore] = useState("");
+    const [secondQuizScore, setSecondQuizScore] = useState("");
     const [examScore, setExamScore] = useState("");
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
      
@@ -78,11 +79,12 @@ export default function ResultManagement() {
   );
    const handleCreateResult = () => {
       const data = {
-        registration_number: selectedStudent,
+        mat_no: selectedStudent,
         course_id: selectedCourse,
         session_id: selectedSession,
         semester_id: selectedSemester,
-        cat_score: catScore,
+        first_quiz_score: firstQuizScore,
+        second_quiz_score: secondQuizScore,
         exam_score: examScore,
       }
       createResult(data)
@@ -111,7 +113,8 @@ export default function ResultManagement() {
       setModalStudents([]);
       setModalCourses([]);
       setModalSemesters([]);
-      setCatScore("");
+      setFirstQuizScore("");
+      setSecondQuizScore("");
       setExamScore("");
       setOpenCreateResultModal(false);
   }
@@ -345,12 +348,22 @@ export default function ResultManagement() {
                   {/* CAT & Exam Score Row */}
                   <Box display="flex" gap={2}>
                     <TextField
-                      label="CAT Score"
+                      label="First Quiz"
                       variant="outlined"
                       size="small"
                       fullWidth
-                      value={catScore}
-                      onChange={e => setCatScore(e.target.value)}
+                      value={firstQuizScore}
+                      onChange={e => setFirstQuizScore(e.target.value)}
+                      type="number"
+                      sx={{ flex: 1 }}
+                    />
+                    <TextField
+                      label="Second Quiz"
+                      variant="outlined"
+                      size="small"
+                      fullWidth
+                      value={secondQuizScore}
+                      onChange={e => setSecondQuizScore(e.target.value)}
                       type="number"
                       sx={{ flex: 1 }}
                     />

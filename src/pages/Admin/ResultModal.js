@@ -213,7 +213,8 @@ const showSnackbar = (message, severity) => {
               <TableRow>
                 <TableCell>Course Code</TableCell>
                 <TableCell>Course Name</TableCell>
-                <TableCell>CAT Score</TableCell>
+                <TableCell>Quiz 1 Score</TableCell>
+                <TableCell>Quiz 2 Score</TableCell>
                 <TableCell>Exam Score</TableCell>
                 <TableCell>Grade</TableCell>
               </TableRow>
@@ -225,14 +226,25 @@ const showSnackbar = (message, severity) => {
                   <TableCell>{courses[index]?.name}</TableCell>
                   <TableCell>
                     {editMode ? (
-                      <TextField value={course.cat_score || ''} size="small" type="number" onChange={e => {
+                      <TextField value={course.first_quiz_score || ''} size="small" type="number" onChange={e => {
                         const val = e.target.value;
                         setEditStudent(s => ({
                           ...s,
-                          courses_info: (s.courses_info || []).map((cc, i) => i === index ? { ...cc, cat_score: val } : cc)
+                          courses_info: (s.courses_info || []).map((cc, i) => i === index ? { ...cc, first_quiz_score: val } : cc)
                         }));
                       }} />
-                    ) : (course.cat_score || '')}
+                    ) : (course.first_quiz_score || '')}
+                  </TableCell>
+                  <TableCell>
+                    {editMode ? (
+                      <TextField value={course.second_quiz_score || ''} size="small" type="number" onChange={e => {
+                        const val = e.target.value;
+                        setEditStudent(s => ({
+                          ...s,
+                          courses_info: (s.courses_info || []).map((cc, i) => i === index ? { ...cc, second_quiz_score: val } : cc)
+                        }));
+                      }} />
+                    ) : (course.second_quiz_score || '')}
                   </TableCell>
                   <TableCell>
                     {editMode ? (
