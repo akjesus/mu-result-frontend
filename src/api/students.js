@@ -29,13 +29,31 @@ export const getStudentsForDepartment = (department, level) => {
 
 export const createStudent = (data) => {
     const token = localStorage.getItem('token');
-    return axios.post(API_URL, data, {
-    
-    headers: {
-          'Content-Type': 'application/json',
-         'Authorization': `Bearer ${token}` 
-          }
-})};
+    return axios.post(API_URL, {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        email: data.email,
+        matric: data.matric,
+        department: data.department,
+        level: data.level,
+        username: data.username,
+    }, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+};
+
+export const updateStudent = (data) => {
+    const token = localStorage.getItem('token');
+    return axios.patch(`${API_URL}/${data.id}`, data, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+};
 
 export const updateDepartment = (id, data) => {
     const token = localStorage.getItem('token');
@@ -126,3 +144,13 @@ const token = localStorage.getItem('token');
         }
     );
 }
+
+
+export const bulkUploadStudents = (formData) => {
+  const token = localStorage.getItem('token');
+  return axios.post(`${API_URL}/bulk-upload`, formData, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+};
