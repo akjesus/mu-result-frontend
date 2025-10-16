@@ -82,10 +82,10 @@ const handleModalClose = () => {
     try {
       const res = await bulkUploadResults(formData);
       if(res.data.success) {
-        showSnackbar(res.data.message || "Results uploaded successfully", "success");
+        showSnackbar("Results uploaded successfully", "success");
         setTimeout ( ()=> {
           handleModalClose();
-        }, 2000);
+        }, 2500);
         
       }
       
@@ -93,14 +93,14 @@ const handleModalClose = () => {
         showSnackbar(res.data.message, "error");
         setTimeout ( ()=> {
           handleModalClose();
-        }, 2000);
+        }, 2500);
     }
     } catch (err) {
       showSnackbar(err.response?.data?.message || "Upload failed", "error");
-      console.error("Bulk upload failed:", err.response?.data?.message);
+      console.log("Bulk upload failed:", err);
       setTimeout ( ()=> {
           handleModalClose();
-        }, 2000);
+        }, 2500);
     }
   };
 
