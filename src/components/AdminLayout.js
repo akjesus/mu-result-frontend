@@ -78,7 +78,6 @@ const AdminLayout = () => {
       setMenuItems(getMenuItems(newRole));
     };
     window.addEventListener("storage", handleStorageChange);
-    // In case role changes in same tab (e.g. after login/logout)
     const interval = setInterval(() => {
       const currentRole = localStorage.getItem("role");
       if (currentRole !== role) {
@@ -104,17 +103,17 @@ const AdminLayout = () => {
     showSnackbar("Logging Out....", "info");
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    localStorage.removeItem("user");
     setTimeout(() => {
       setRole(null);
       setMenuItems([]);
-      navigate("/login");
+      navigate("/");
     }, 1500);
   };
 
   return (
     <>
   <Box sx={{ display: "flex", height: "100vh", position: "relative" }}>
-        {/* Sidebar toggle button for mobile */}
         <Box sx={{ position: "fixed", top: 16, left: 8, zIndex: 1300, display: { xs: "block", md: "none" } }}>
           <Button
             variant="contained"
@@ -124,8 +123,6 @@ const AdminLayout = () => {
             {sidebarOpen ? <ChevronLeft /> : <ChevronRight />}
           </Button>
         </Box>
-
-        {/* User Info at top right */}
         <Box sx={{ position: "fixed", top: 16, right: 32, zIndex: 1400, display: "flex", alignItems: "center", gap: 2 }}>
           <AccountCircleIcon sx={{ fontSize: 40, color: "#2C2C78" }} />
           <Box sx={{ textAlign: "right" }}>
@@ -133,9 +130,7 @@ const AdminLayout = () => {
               {user?.name || "User"}
             </Box>
           </Box>
-          {/* Removed Logout button from top right */}
         </Box>
-        {/* Sidebar */}
   <Drawer
           variant={sidebarOpen ? "temporary" : "permanent"}
           open={sidebarOpen}

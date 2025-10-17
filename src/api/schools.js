@@ -75,13 +75,13 @@ export const deleteCourse = (id) => {
 
 export const updateCourse = (data) => {
      const token = localStorage.getItem('token');
-    return axios.put(`${BASE_URL}/courses`, 
+    return axios.put(`${BASE_URL}/courses/${data.id}`, 
     { 
         name: data.title,
         code: data.code, 
-        department_id: data.department, 
-        level_id: data.level,
-        semester_id: data.semester,
+        department_id: data.departmentId, 
+        level_id: data.levelId,
+        semester_id: data.semesterId,
         credit_load: data.credit,
         active: data.active,
      }

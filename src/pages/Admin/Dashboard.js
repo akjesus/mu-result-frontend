@@ -34,21 +34,16 @@ export default function AdminDashboard() {
       .then((res) => {
         if (!res.data.success) {
           showSnackbar(res.data.message || "Failed to fetch dashboard data", "info");
-          return; // Stop further processing
+          return; 
         }
-        // Assuming API returns an object with keys matching the stat keys
         const data = res.data.dashboardData;
         showSnackbar("Dashboard stats fetched successfully!", "success");
-        // Map API response to stats array
         const statsArr = [
           { key: "totalStudents", label: "Total Students", value: data?.totalStudents ? data.totalStudents : 0, path: "/admin/students" },
           { key: "totalCourses", label: "Total Courses", value: data?.totalCourses ? data.totalCourses : 0, path: "/admin/courses" },
           { key: "totalDepartments", label: "Departments", value: data?.totalDepartments ? data.totalDepartments : 0, path: "/admin/departments" },
-          { key: "avgCGPA", label: "Average CGPA", value: data?.avgCGPA ? data.avgCGPA.toFixed(2) : 0 },
-          { key: "highestCGPA", label: "Highest CGPA", value: data?.highestCGPA ? data.highestCGPA.toFixed(2) : 0 },
-          { key: "highestGPA", label: "Highest GPA", value: data?.highestGPA ? data.highestGPA.toFixed(2) : 0 },
-          { key: "lowestCGPA", label: "Lowest CGPA", value: data?.lowestCGPA ? data.lowestCGPA.toFixed(2) : 0 },
-          { key: "lowestGPA", label: "Lowest GPA", value: data?.lowestGPA ? data.lowestGPA.toFixed(2) : 0 },
+          { key: "avgCGPA", label: "Average CGPA", value: data?.avgCGPA ? data.avgCGPA.toFixed(2) : 0,  path: "/admin/results" },
+          { key: "highestCGPA", label: "Highest CGPA", value: data?.highestCGPA ? data.highestCGPA.toFixed(2) : 0, path: "/admin/results" },
         ];
         setStats(statsArr);
       })
@@ -58,10 +53,6 @@ export default function AdminDashboard() {
       });
   }, []);
 
-  //get data from API
-
-  //
-  // Mock data for departmental performance
   const deptPerformance = [
     { name: "Computer Science", avgGPA: 3.8 },
     { name: "Pharmacy", avgGPA: 3.5 },
@@ -70,7 +61,6 @@ export default function AdminDashboard() {
     { name: "Medicine", avgGPA: 3.7 },
   ];
 
-  // Mock data for CGPA distribution
   const cgpaDistribution = [
     { name: "First Class (4.5+)", value: 300 },
     { name: "2nd Upper (3.5 - 4.49)", value: 500 },
@@ -93,7 +83,6 @@ export default function AdminDashboard() {
       <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "#2C2C78", fontSize: { xs: 18, sm: 24 } }}>
       Admin Dashboard
       </Typography>
-      {/* Summary Cards */}
       <Grid container spacing={2} sx={{ mb: 2 }}>
         {stats.map((item) => (
           <Grid item xs={12} sm={6} md={3} key={item.key}>
@@ -117,9 +106,7 @@ export default function AdminDashboard() {
           </Grid>
         ))}
       </Grid>
-      {/* Charts Section */}
       <Grid container spacing={2} sx={{ mt: 2 }}>
-        {/* Department Performance */}
         <Grid xs={12} md={6}>
           <Card sx={{ borderRadius: 2, mb: { xs: 2, md: 0 } }}>
             <CardContent>
@@ -137,7 +124,6 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
         </Grid>
-        {/* CGPA Distribution */}
         <Grid item xs={12} md={6}>
           <Card sx={{ borderRadius: 2 }}>
             <CardContent>
@@ -167,7 +153,6 @@ export default function AdminDashboard() {
           </Card>
         </Grid>
       </Grid>
-      {/* Snackbar */}
             <Snackbar
               open={snackbar.open}
               autoHideDuration={3000}

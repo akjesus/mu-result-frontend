@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { getCourses, createCourse, getLevels, deleteCourse } from "../../api/schools";
+import { getCourses, createCourse, updateCourse, getLevels, deleteCourse } from "../../api/schools";
 import { getDepartments } from "../../api/departments";
 
 import {
@@ -45,11 +45,11 @@ export default function AdminCourses() {
       const payload = {
         code: newCourse.code,
         title: newCourse.title,
-        department: newCourse.department,
-        level: newCourse.level,
+        department: newCourse.departmentId,
+        level: newCourse.levelId,
         credit: newCourse.credit,
         active: newCourse.active,
-        semester: newCourse.semester,
+        semester: newCourse.semesterId,
       };
       const res = await createCourse(payload);
       if (res.data.success) {
@@ -60,20 +60,17 @@ export default function AdminCourses() {
       } else {
         showSnackbar(res.data.message || "Failed to create course", "error");
       }
-      // Optionally refresh courses list here
     } catch (err) {
       console.log(err);
       showSnackbar(err.response?.data?.message || "Failed to create course", "error");
       handleClose();
     }
   };
-  // Search state
   const [search, setSearch] = useState("");
-  // State for courses and departments
   const [courses, setCourses] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [levels, setLevels] = useState([]);
-  // Fetch departments from API
+
   useEffect(() => {
     getDepartments()
       .then((res) => {
@@ -93,7 +90,10 @@ export default function AdminCourses() {
         showSnackbar("Courses, Departments and Levels Fetched!", "success");
         setLevels(res.data.levels || []);
       })
-      .catch(console.error);
+      .catch(error => {
+        console.log(error);
+        showSnackbar("Error Fetching Data", "error");
+      }); 
   }, []);
 
   const [open, setOpen] = useState(false);
@@ -101,25 +101,27 @@ export default function AdminCourses() {
   const [newCourse, setNewCourse] = useState({
     code: "",
     title: "",
-    department: "",
-    level: "",
+    departmentId: "",
+    semesterId: "",
+    levelId: "",
     credit: "",
     active: "",
   });
 
-  // Pagination
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  // Open modal for Add/Edit
+
   const handleOpen = (course = null, index = null) => {
     if (course) {
       setNewCourse({
+        id: course.id || "",
         code: course.code || "",
         title: course.title || "",
-        department: course.department || "",
-        level: course.level || "",
-        semester: course.semester || "",
+        departmentId: course.departmentId || "",
+        levelId: course.levelId || "",
+        semesterId: course.semesterId || "",
         credit: course.credit || "",
         active: course.active || "",
       });
@@ -128,9 +130,9 @@ export default function AdminCourses() {
       setNewCourse({
         code: "",
         title: "",
-        department: "",
-        level: "",
-        semester: "",
+        departmentId: "",
+        levelId: "",
+        semesterId: "",
         credit: "",
         active: "",
       });
@@ -147,19 +149,28 @@ export default function AdminCourses() {
 
 
   const handleDepartmentChange = (event) => {
-    setNewCourse({ ...newCourse, department: event.target.value });
+    setNewCourse({ ...newCourse, departmentId: event.target.value });
   };
 
   const handleLevelChange = (event) => {
-    setNewCourse({ ...newCourse, level: event.target.value });
+    setNewCourse({ ...newCourse, levelId: event.target.value });
   };
 
   // Add or Update Course
-  const handleSaveCourse = () => {
+  const handleSaveCourse = async () => {
     if (editIndex !== null) {
-      const updated = [...courses];
-      updated[editIndex] = newCourse;
-      setCourses(updated);
+      try {
+        const res = await updateCourse(newCourse);
+        if(res.status === 200) {
+          showSnackbar("Course Updated Successfully!", "success");
+          const courses = await getCourses();
+          setCourses(courses.data.courses || []);
+        }
+        
+      } catch (error) {
+        console.log(error);
+        showSnackbar("Error Updating Course", "error");
+      }
     } else {
       handleSubmitCourse();
     }
@@ -170,15 +181,15 @@ export default function AdminCourses() {
   const handleDelete =  async (id) => {
     if (window.confirm("Are you sure you want to delete this course?")) {
       try  {
-        const response = await deleteCourse(id);
-        if(response.ok) {
+        const res = await deleteCourse(id);
+        if(res.status === 200) {
           const courses = await getCourses();
           setCourses(courses.data.courses || []);
           showSnackbar("Course Deleted Successfully!", "success");
           return;
         }
         else {
-          showSnackbar(response.data.message || "There was an error", "error");
+          showSnackbar(res.data.message || "There was an error", "error");
           return;
         }
       }
@@ -250,7 +261,7 @@ export default function AdminCourses() {
                   <TableCell>{course.departments}</TableCell>
                   <TableCell>{course.level}</TableCell>
                   <TableCell>{course.credit}</TableCell>
-                  <TableCell>{course.active}</TableCell>
+                  <TableCell>{course.active?"Yes":"No"}</TableCell>
                   <TableCell>
                     <Box sx={{ display: 'flex', gap: 1.5, justifyContent: 'center', alignItems: 'center' }}>
                       <IconButton
@@ -336,9 +347,9 @@ export default function AdminCourses() {
               select
               margin="dense"
               label="Semester"
-              name="semester"
+              name="semesterId"
               sx={{ width: 250, mr: 2 }}
-              value={newCourse.semester}
+              value={newCourse.semesterId}
               onChange={handleChange}
             >
               <MenuItem value="1">First Semester</MenuItem>
@@ -358,7 +369,7 @@ export default function AdminCourses() {
               <FormControl sx={{ width: 390 }}>
                 <InputLabel>Department</InputLabel>
                 <Select
-                  value={newCourse.department}
+                  value={newCourse.departmentId}
                   onChange={handleDepartmentChange}
                   label="Department"
                 >
@@ -372,13 +383,13 @@ export default function AdminCourses() {
               <FormControl sx={{ width: 390 }}>
                 <InputLabel>Level</InputLabel>
                 <Select
-                  value={newCourse.level}
+                  value={newCourse.levelId}
                   onChange={handleLevelChange}
                   label="Level"
                 >
                   {levels.map((lvl) => (
-                    <MenuItem key={lvl.id || lvl} value={lvl.id || lvl}>
-                      {lvl.name || lvl}
+                    <MenuItem key={lvl.id} value={lvl.id}>
+                      {lvl.name}
                     </MenuItem>
                   ))}
                 </Select>
@@ -389,6 +400,7 @@ export default function AdminCourses() {
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
             <Button
+            disabled={!newCourse.code || !newCourse.title || !newCourse.departmentId || !newCourse.levelId || !newCourse.semesterId || !newCourse.credit || !newCourse.active}
               variant="contained"
               sx={{ bgcolor: "#2C2C78" }}
               onClick={handleSaveCourse}

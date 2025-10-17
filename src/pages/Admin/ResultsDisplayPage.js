@@ -197,7 +197,7 @@ export default function ResultDisplayPage() {
         onClick={handleFetchResults}
         disabled={fetching || !selectedSession || !selectedSemester}
       >
-        {fetching ? 'Fetching...' : 'Fetch Results'}
+        {fetching ? 'Getting...' : 'Get Results'}
       </Button>
     </Box>
     {/* Level Tabs */}
