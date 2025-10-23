@@ -341,7 +341,7 @@ export default function AdminCourses() {
               onChange={handleChange}
             >
               <MenuItem value="1">Yes</MenuItem>
-              <MenuItem value="2">No</MenuItem>
+              <MenuItem value="0">No</MenuItem>
             </TextField>
             <TextField
               select

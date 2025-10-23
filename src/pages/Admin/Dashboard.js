@@ -41,7 +41,7 @@ export default function AdminDashboard() {
         const statsArr = [
           { key: "totalStudents", label: "Total Students", value: data?.totalStudents ? data.totalStudents : 0, path: "/admin/students" },
           { key: "totalCourses", label: "Total Courses", value: data?.totalCourses ? data.totalCourses : 0, path: "/admin/courses" },
-          { key: "totalDepartments", label: "Departments", value: data?.totalDepartments ? data.totalDepartments : 0, path: "/admin/departments" },
+          { key: "totalDepartments", label: "Departments", value: data?.totalDepartments ? data.totalDepartments : 0, path: "/admin/schools" },
           { key: "avgCGPA", label: "Average CGPA", value: data?.avgCGPA ? data.avgCGPA.toFixed(2) : 0,  path: "/admin/results" },
           { key: "highestCGPA", label: "Highest CGPA", value: data?.highestCGPA ? data.highestCGPA.toFixed(2) : 0, path: "/admin/results" },
         ];

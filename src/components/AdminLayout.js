@@ -18,7 +18,6 @@ import {
   Dashboard,
   People,
   Book,
-  Apartment,
   School,
   BarChart,
   Grade,
@@ -40,7 +39,6 @@ const getMenuItems = (role) => {
       { text: "Dashboard", icon: <Dashboard />, path: "/admin/dashboard" },
       { text: "Students", icon: <People />, path: "/admin/students" },
       { text: "Courses", icon: <Book />, path: "/admin/courses" },
-      { text: "Departments", icon: <Apartment />, path: "/admin/departments" },
       { text: "Schools", icon: <School />, path: "/admin/schools" },
       { text: "Results", icon: <BarChart />, path: "/admin/results" },
       { text: "Transcripts", icon: <BarChart />, path: "/admin/transcripts" },
@@ -53,7 +51,6 @@ const getMenuItems = (role) => {
       { text: "Dashboard", icon: <Dashboard />, path: "/admin/dashboard" },
       { text: "Students", icon: <People />, path: "/admin/students" },
       { text: "Courses", icon: <Book />, path: "/admin/courses" },
-      { text: "Departments", icon: <Apartment />, path: "/admin/departments" },
       { text: "Schools", icon: <School />, path: "/admin/schools" },
       { text: "Results", icon: <BarChart />, path: "/admin/results" },
     ];

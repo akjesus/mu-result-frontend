@@ -167,7 +167,7 @@ export default function ResultManagement() {
     <Box p={3}>
       {/* Header */}
       <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "#2C2C78" }}>
-        Result Management
+         Manage Results
       </Typography>
 
       {/* Quick Navigation Buttons */}
@@ -212,7 +212,7 @@ export default function ResultManagement() {
                                                   color="secondary"
                                                   size="small"
                                                   sx={{ bgcolor: '#e3e3fa', borderRadius: 2, p: 0.5, boxShadow: 1, ':hover': { bgcolor: '#d1d1f7' } }}
-                                                  onClick={() => navigate(`/admin/results/${departments.id}`)}
+                                                  onClick={() => navigate(`/admin/results/${departments.id}`, { state: { department: departments.name } })}
                                                   aria-label="View Department Results"
                                                 >
                                                   <Visibility fontSize="small" />

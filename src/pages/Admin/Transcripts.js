@@ -62,7 +62,7 @@ export default function TranscriptManagement() {
     <Box p={{ xs: 1, sm: 3 }} sx={{ maxWidth: 900, mx: 'auto' }}>
       {/* Header */}
       <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "#2C2C78", fontSize: { xs: 18, sm: 24 } }}>
-        Transcript Management
+         Manage Transcripts
       </Typography>
       {/* Quick Navigation Buttons */}
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, mb: 3 }}>

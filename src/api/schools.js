@@ -83,7 +83,7 @@ export const updateCourse = (data) => {
         level_id: data.levelId,
         semester_id: data.semesterId,
         credit_load: data.credit,
-        active: data.active,
+        active: parseInt(data.active),
      }
         , 
         { headers: {

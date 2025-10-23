@@ -8,7 +8,6 @@ import ForgotPassword from "../pages/Auth/ForgotPassword";
 import AdminDashboard from "../pages/Admin/Dashboard";
 import AdminStudents from "../pages/Admin/Students";
 import AdminCourses from "../pages/Admin/Courses";
-import AdminDepartments from "../pages/Admin/Departments";
 import AdminSchools from "../pages/Admin/Schools";
 import AdminResults from "../pages/Admin/Results";
 import AdminGrades from "../pages/Admin/Grades";
@@ -27,7 +26,8 @@ import Results from "../pages/Student/Results";
 import StudentLayout from "../components/StudentLayout";
 import Settings from "../pages/Student/Settings";
 
-const AppRouter = () => (
+const AppRouter = () => {
+  return (
   <BrowserRouter>
     <Routes>
       {/* Public Routes */}
@@ -61,7 +61,6 @@ const AppRouter = () => (
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="students" element={<AdminStudents />} />
         <Route path="courses" element={<AdminCourses />} />
-        <Route path="departments" element={<AdminDepartments />} />
         <Route path="schools" element={<AdminSchools />} />
         <Route path="results" element={<AdminResults />} />
         <Route path="transcripts" element={<Transcripts />} />
@@ -70,7 +69,7 @@ const AppRouter = () => (
         <Route path="settings" element={<AdminSettings />} />
         <Route path="probation" element={<Probation />} />
         <Route path="/admin/results/:departmentId" element={<ResultUploadPage />} />
-        <Route path="/admin/transcripts/:departmentId" element={<TranscriptDisplayPage />} />
+        <Route path="/admin/transcripts/:departmentId" element={<TranscriptDisplayPage />} dept ={{ departmentId:":departmentId" }}/>
         <Route path="results/:id" element={<ResultUploadPage />} />
       </Route>
 
@@ -94,5 +93,5 @@ const AppRouter = () => (
     </Routes>
   </BrowserRouter>
 );
-
+}
 export default AppRouter;

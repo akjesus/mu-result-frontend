@@ -32,8 +32,7 @@ import { Edit, Delete, UploadFile, LockReset } from "@mui/icons-material";
 // Mock API imports (replace with actual API calls)
 import { getSchools, getLevels } from "../../api/schools";
 import { getDepartments } from "../../api/departments";
-import { getStudentsForDepartment,  resetStudentPassword } from "../../api/students";
-import {createStudent, updateStudent, bulkUploadStudents} from "../../api/students";
+import {createStudent, updateStudent, deleteStudent, bulkUploadStudents, getStudentsForDepartment,  resetStudentPassword} from "../../api/students";
   
 
 export default function AdminStudents() {
@@ -139,7 +138,7 @@ export default function AdminStudents() {
         .then((res) => {
           setStudents(res.data.students || []);
           setStudentsFetched(()=> !studentsFetched);
-          showSnackbar(`Students fetched for ${res.data.students[0].department } Department`, "success");
+          showSnackbar(`Students retrieved for ${res.data.students[0].department } Department`, "success");
         })
         .catch((error) => {
           console.log(error)
@@ -187,14 +186,24 @@ export default function AdminStudents() {
     handleClose();
   };
 
-  const handleDelete = (student, index) => {
-    console.log(student, index)
-     if (window.confirm(`Are you sure you want to delete ${student.name || student.matric}?`)) {
+  const handleDelete = async(student, index) => {
+     if (window.confirm(`Are you sure you want to delete ${student.name}?`)) {
       const updated = students.filter((_, i) => i !== index);
-      setStudents(updated);
-
+      try {
+        const res = await deleteStudent(student.id);  
+        if (res.status === 200) {
+          showSnackbar("Student deleted successfully", "success");
+          setStudents(updated);
+        } else {
+          showSnackbar("Failed to delete student", "error");
+        }
+      } catch (error) {
+        console.log(error);
+        showSnackbar(error.response?.data?.message || error.message, "error");
+      } 
     }
   };
+
   const handleEditSaveStudent =  async () => {
     try {
           const res = await updateStudent(newStudent);
@@ -338,7 +347,7 @@ export default function AdminStudents() {
                 onClick={handleFetchStudents}
                 disabled={!selectedFaculty || !selectedDepartment || !selectedLevel}
               >
-                Fetch Students
+                Get Students
               </Button>
             </Box>
 

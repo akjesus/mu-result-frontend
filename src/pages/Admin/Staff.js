@@ -159,7 +159,7 @@ export default function StaffSettings() {
     <>
     <Box p={{ xs: 1, sm: 3 }} sx={{ maxWidth: 900, mx: 'auto' }}>
       <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "#2C2C78", fontSize: { xs: 18, sm: 24 } }}>
-        Staff Management
+         Manage Staff
       </Typography>
       <Button variant="contained" sx={{ mb: 2, bgcolor: '#2C2C78' }} onClick={handleCreateOpen}>Add New Staff</Button>
       {/* Create New Staff Modal */}

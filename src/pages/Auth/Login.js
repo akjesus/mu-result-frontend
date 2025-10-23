@@ -101,7 +101,7 @@ function Login() {
             align="center"
             sx={{ fontWeight: "bold" }}
           >
-            University Result Portal
+           Maduka University Result Portal
           </Typography>
           <form onSubmit={handleSubmit}>
             <TextField
