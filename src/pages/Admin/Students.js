@@ -74,6 +74,7 @@ export default function AdminStudents() {
     departmentId: "",
     first_name: "",
     last_name: "",
+    levelId: ""
   });
 
   // Filters
@@ -149,6 +150,7 @@ export default function AdminStudents() {
     }
   };
   const handleOpenEdit = (student, index) => {
+    console.log(student);
     setNewStudent(student);
     setEditIndex(index);
     setOpenEdit(true);
@@ -164,7 +166,13 @@ export default function AdminStudents() {
     setOpenEdit(false);
   };
   const handleChange = (e) => setNewStudent({ ...newStudent, [e.target.name]: e.target.value });
+  const handleLevelChange = (event) => {
+    setNewStudent({ ...newStudent, levelId: event.target.value });
+  };
 
+  const handleDepartmentChange = (event) => {
+    setNewStudent({ ...newStudent, departmentId: event.target.value });
+  };
   const handleSaveStudent = async () => {
     try {
         const res = await createStudent(newStudent);
@@ -329,12 +337,9 @@ export default function AdminStudents() {
                   }}
                 >
                   <MenuItem value="">Select Level</MenuItem>
-                  <MenuItem key={1} value={1}>100 Level</MenuItem>
-                  <MenuItem key={2} value={2}>200 Level</MenuItem>
-                  <MenuItem key={3} value={3}>300 Level</MenuItem>
-                  <MenuItem key={4} value={4}>400 Level</MenuItem>
-                  <MenuItem key={5} value={5}>500 Level</MenuItem>
-                  <MenuItem key={6} value={6}>600 Level</MenuItem>
+                  {levels.map(level => (
+                    <MenuItem key={level.id} value={level.id}>{level.name}</MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               <Button
@@ -460,7 +465,7 @@ export default function AdminStudents() {
                 </TableBody>
               </Table>
             </Box>
-<Dialog open={openEdit} onClose={() => setOpenEdit(false)} fullWidth maxWidth="sm">
+          <Dialog open={openEdit} onClose={() => setOpenEdit(false)} fullWidth maxWidth="sm">
               <DialogTitle sx={{ fontSize: { xs: 18, sm: 22 } }}>
                 {"Edit Student"}
               </DialogTitle>
@@ -516,8 +521,8 @@ export default function AdminStudents() {
                     </FormControl>
                     <FormControl fullWidth margin="dense" sx={{ flex: 1 }} size="small">
                       <InputLabel>Department</InputLabel>
-                      <Select name="department" value={newStudent.department} onChange={handleChange} label="Department">
-                        {departments.filter((d) =>  d.school === newStudent.school)
+                      <Select name="department" value={newStudent.departmentId} onChange={handleDepartmentChange} label="Department">
+                        {departments.filter((d) =>  d.school_id === newStudent.schoolId)
                           .map((d) => (<MenuItem key={d.id} value={d.id}>{d.name}</MenuItem>))}
                       </Select>
                     </FormControl>
@@ -525,8 +530,12 @@ export default function AdminStudents() {
                   <Box display="flex" gap={2} flexDirection={{ xs: "column", sm: "row" }}>
                     <FormControl fullWidth margin="dense" sx={{ flex: 1 }} size="small">
                       <InputLabel>Level</InputLabel>
-                      <Select name="level" value={newStudent.level} onChange={handleChange} label="Level">
-                        {levels.map((l) => (<MenuItem key={l.id} value={l.id}>{l.name}</MenuItem>))}
+                      <Select name="level" value={newStudent.levelId} onChange={handleLevelChange} label="Level">
+                        {levels.map((l) => {
+                          return (
+                            <MenuItem key={l.id} value={l.id}>{l.name}</MenuItem>
+                          )
+                        })}
                       </Select>
                     </FormControl>
                     <TextField

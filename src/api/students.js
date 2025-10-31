@@ -52,8 +52,8 @@ export const updateStudent = (data) => {
         last_name: data.last_name,
         email: data.email,
         matric: data.matric,
-        department: data.department,
-        level: data.level,
+        department: data.departmentId,
+        level: data.levelId,
         username: data.username,
     }, {
         headers: {
