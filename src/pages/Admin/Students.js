@@ -594,7 +594,7 @@ export default function AdminStudents() {
               <Paper sx={{ p: 2, width: "100%" }}>
                 <Typography sx={{ mb: 1, fontWeight: 600 }}>Bulk Upload (CSV)</Typography>
                 <Typography variant="body2" sx={{ mb: 1, color: "text.secondary" }}>
-                  Upload a CSV file with student records. Use the sample CSV to ensure correct columns.
+                  Upload a CSV file with student records.
                 </Typography>
 
                 <Box sx={{ display: "flex", gap: 1, flexDirection: { xs: "column", sm: "row" }, alignItems: "center" }}>
@@ -683,7 +683,8 @@ export default function AdminStudents() {
                     <FormControl fullWidth margin="dense" sx={{ flex: 1 }} size="small">
                       <InputLabel>Department</InputLabel>
                       <Select name="department" value={newStudent.department} onChange={handleChange} label="Department">
-                        {departments.filter((d) => newStudent.school || d.school === newStudent.school)
+                        {console.log(schools)}
+                        {departments.filter((d) =>  d.school_id === schools.find(s => s.name === newStudent.school)?.id)
                           .map((d) => (<MenuItem key={d.id} value={d.id}>{d.name}</MenuItem>))}
                       </Select>
                     </FormControl>
