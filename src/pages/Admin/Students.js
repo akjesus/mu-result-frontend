@@ -683,7 +683,6 @@ export default function AdminStudents() {
                     <FormControl fullWidth margin="dense" sx={{ flex: 1 }} size="small">
                       <InputLabel>Department</InputLabel>
                       <Select name="department" value={newStudent.department} onChange={handleChange} label="Department">
-                        {console.log(schools)}
                         {departments.filter((d) =>  d.school_id === schools.find(s => s.name === newStudent.school)?.id)
                           .map((d) => (<MenuItem key={d.id} value={d.id}>{d.name}</MenuItem>))}
                       </Select>

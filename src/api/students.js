@@ -172,3 +172,13 @@ export const deleteStudent = (id) => {
         }
     });
 };
+
+export const blockUnblockStudent = (id, isBlocked) => {
+    const token = localStorage.getItem('token');
+    return axios.put(`${API_URL}/${id}/block-unblock`, { isBlocked }, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+};

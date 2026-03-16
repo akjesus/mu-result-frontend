@@ -19,14 +19,15 @@ import {
   InputLabel,
   Tooltip,
   IconButton,
-
-
-
+  Switch,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {  Visibility, Edit } from "@mui/icons-material";
 import TranscriptModal from "./ResultModal";
 import { getResultsByDepartment } from "../../api/results";
 import { getSessionsWithSemesters, getAllLevels } from "../../api/sessions";
+import {blockUnblockStudent} from "../../api/students";
 
 
 export default function ResultDisplayPage() {
@@ -47,8 +48,16 @@ export default function ResultDisplayPage() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [levelTab, setLevelTab] = useState(0);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
 
+  const showSnackbar = (message, severity) => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
   // Fetch sessions and levels on mount
   useEffect(() => {
     getSessionsWithSemesters().then(res => setSessions(res.data.sessions)).catch(() => setSessions([]));
@@ -107,6 +116,25 @@ export default function ResultDisplayPage() {
     } else {
       setShowResults(false);
     }
+  };
+
+  const handleBlockUnblock = async (student, isBlocked) => {
+    try {
+      const res = await blockUnblockStudent(student.studentId, isBlocked);
+      if (res.status === 200) {
+        showSnackbar(`Student ${student.student_name} has been ${isBlocked ? 'blocked' : 'unblocked'}.`);
+      }
+      setStudents(students => students.map(s => {
+        if (s.matric === student.matric) {
+          return { ...s, isBlocked };
+        }
+        return s;
+      }));
+    }
+    catch (error) {
+      showSnackbar('An error occurred. Please try again.', 'error');
+      return;
+    }  
   };
 
   // Get all unique levels from students or from API
@@ -262,6 +290,7 @@ export default function ResultDisplayPage() {
                     <TableCell key={course.code} sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>{course.code}</TableCell>
                   ))}
                   <TableCell sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>GPA</TableCell>
+                  <TableCell sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>Blocked</TableCell>
                   <TableCell sx={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
@@ -292,11 +321,24 @@ export default function ResultDisplayPage() {
                     <TableRow key={student.matric}>
                       <TableCell>{student.matric}</TableCell>
                       {allCourses.map(course => (
-                        <TableCell key={course.code} align="center">
+                        <TableCell
+                          key={course.code}
+                          align="center"
+                          sx={
+                            courseMap[course.code]
+                              ? courseMap[course.code].grade === "F"
+                                ? { color: "#d32f2f", fontWeight: "bold" }
+                                : { color: "#388e3c", fontWeight: "bold" }
+                              : {}
+                          }
+                        >
                           {courseMap[course.code] ? `${courseMap[course.code].grade}` : '-'}
                         </TableCell>
                       ))}
                       <TableCell>{gpa}</TableCell>
+                      <TableCell>
+                        <Switch checked={student.isBlocked} onChange={e => handleBlockUnblock(student, e.target.checked)} />
+                      </TableCell>
                       <TableCell>
                         {/* Use MUI IconButton and Tooltip for View and Edit actions */}
                         <Box display="flex" gap={1}>
@@ -351,6 +393,16 @@ export default function ResultDisplayPage() {
         setOpenResult(false);
       }}
     />
+    <Snackbar
+              open={snackbar.open}
+              autoHideDuration={3000}
+              onClose={handleCloseSnackbar}
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+              <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: "100%" }}>
+                {snackbar.message}
+              </Alert>
+            </Snackbar>
   </Box>
   );
 }

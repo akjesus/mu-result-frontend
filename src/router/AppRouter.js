@@ -3,6 +3,7 @@ import NotFound from "../pages/NotFound";
 import Login from "../pages/Auth/Login";
 import ProtectedRoute from "./ProtectedRoute";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
+import ResetPassword from "../pages/Auth/ResetPassword";
 
 // Admin Pages
 import AdminDashboard from "../pages/Admin/Dashboard";
@@ -34,6 +35,7 @@ const AppRouter = () => {
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       {/* Admin Routes (protected + wrapped in AdminLayout) */}
         <Route
@@ -85,8 +87,7 @@ const AppRouter = () => {
         <Route path="dashboard" element={<StudentDashboard />} />
         <Route path="profile" element={<Profile />} />
         <Route path="results" element={<Results />} />
-         <Route path="settings" element={<Settings />} />
-  "
+        <Route path="settings" element={<Settings />} />
       </Route>
       {/* Catch-all route for 404 */}
       <Route path="*" element={<NotFound />} />

@@ -107,7 +107,7 @@ const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "
     doc.addImage(logo, "PNG", 90, 10, 25, 25);
     doc.setFontSize(18);
       doc.setFillColor(100, 0, 0, 0);
-      doc.text("Maduka University, Ekwegbe, Enugu State", 45, 40);
+      doc.text("Maduka University, Ekwegbe - Nsukka, Enugu State", 25, 40);
       doc.setFontSize(14);
       doc.text("Email: vc@madukauniversity.edu.ng", 65, 47);
       doc.setFontSize(12);
@@ -144,11 +144,26 @@ const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "
       // Add semester title
       doc.setFontSize(14);
       doc.text(semester, 14, startY);
-      // Add table for this semester
+
+      // Highlight "F" rows in red in PDF
+      const rowStyles = semResults.map(r =>
+        r.grade === "F"
+          ? { fillColor: [249, 188, 191] } // same as table color in UI
+          : {}
+      );
+      // Add style for the total row (no color)
+      rowStyles.push({});
+
       autoTable(doc, {
         startY: startY + 4,
         head: [tableColumn],
         body: tableRows,
+        bodyStyles: {},
+        didParseCell: function (data) {
+          if (data.section === 'body' && rowStyles[data.row.index]?.fillColor) {
+            data.cell.styles.fillColor = rowStyles[data.row.index].fillColor;
+          }
+        }
       });
       startY = doc.lastAutoTable.finalY + 10;
       // Accumulate for CGPA
@@ -284,7 +299,10 @@ const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "
               </TableHead>
               <TableBody>
                 {results.map((course, index) => (
-                  <TableRow key={index}>
+                  <TableRow
+                    key={index}
+                    sx={course.grade === "F" ? { bgcolor: "#f9bcbcff" } : {bgcolor: "#5fecbaff"}}
+                  >
                     <TableCell sx={{ fontSize: { xs: 13, sm: 15 } }}>{course.code}</TableCell>
                     <TableCell sx={{ fontSize: { xs: 13, sm: 15 } }}>{course.title}</TableCell>
                     <TableCell sx={{ fontSize: { xs: 13, sm: 15 } }}>{course.credit}</TableCell>

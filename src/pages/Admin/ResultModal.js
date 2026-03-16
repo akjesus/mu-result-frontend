@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
   Dialog,
   DialogTitle,
@@ -32,7 +32,7 @@ export default function ResultModal({ open, handleClose, student, editMode = fal
       courses_info: Array.isArray(student.courses_info) ? student.courses_info : [],
     } : { results: [], courses_info: [] }
   );
-  React.useEffect(() => {
+  useEffect(() => {
     if (!student) {
       setEditStudent({ results: [], courses_info: [] });
       return;
@@ -91,7 +91,7 @@ const showSnackbar = (message, severity) => {
     const doc = new jsPDF();
     doc.addImage(logo, "PNG", 14, 10, 25, 25);
     doc.setFontSize(18);
-    doc.text("Maduka University, Ekwegbe", 45, 25);
+    doc.text("Maduka University, Ekwegbe - Nsukka", 45, 25);
     doc.setFontSize(16);
     doc.text("Student Result", 14, 45);
     doc.setFontSize(12);
@@ -211,6 +211,7 @@ const showSnackbar = (message, severity) => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>S/N</TableCell>
                 <TableCell>Course Code</TableCell>
                 <TableCell>Course Name</TableCell>
                 <TableCell>Quiz 1 Score</TableCell>
@@ -222,29 +223,30 @@ const showSnackbar = (message, severity) => {
             <TableBody>
               {(editMode ? (editStudent?.courses_info || []) : (courses || [])).map((course, index) => (
                 <TableRow key={index}>
+                  <TableCell>{index + 1}</TableCell>
                   <TableCell>{courses[index]?.code}</TableCell>
                   <TableCell>{courses[index]?.name}</TableCell>
                   <TableCell>
                     {editMode ? (
-                      <TextField value={course.first_quiz_score || ''} size="small" type="number" onChange={e => {
+                      <TextField value={course.first_quiz } size="small" type="number" onChange={e => {
                         const val = e.target.value;
                         setEditStudent(s => ({
                           ...s,
-                          courses_info: (s.courses_info || []).map((cc, i) => i === index ? { ...cc, first_quiz_score: val } : cc)
+                          courses_info: (s.courses_info || []).map((cc, i) => i === index ? { ...cc, first_quiz: val } : cc)
                         }));
                       }} />
-                    ) : (course.first_quiz_score || '')}
+                    ) : (course.first_quiz )}
                   </TableCell>
                   <TableCell>
                     {editMode ? (
-                      <TextField value={course.second_quiz_score || ''} size="small" type="number" onChange={e => {
+                      <TextField value={course.second_quiz } size="small" type="number" onChange={e => {
                         const val = e.target.value;
                         setEditStudent(s => ({
                           ...s,
-                          courses_info: (s.courses_info || []).map((cc, i) => i === index ? { ...cc, second_quiz_score: val } : cc)
+                          courses_info: (s.courses_info || []).map((cc, i) => i === index ? { ...cc, second_quiz: val } : cc)
                         }));
                       }} />
-                    ) : (course.second_quiz_score || '')}
+                    ) : (course.second_quiz )}
                   </TableCell>
                   <TableCell>
                     {editMode ? (

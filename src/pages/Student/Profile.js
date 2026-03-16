@@ -4,10 +4,10 @@ import {
   Container,
   Typography,
   Avatar,
-  Button,
   Box,
   Snackbar, Alert,
 } from "@mui/material";
+import mulogo from "../../assets/maduka-logo.png";
 
 export default function StudentProfile() {
   const [profileData, setProfileData] = useState({})
@@ -31,15 +31,6 @@ export default function StudentProfile() {
         }));
     }, []);
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {return  };
-    // Future: Upload image to server and update profile picture}
-  }
-  const handleSave = () => {
-    // Later connect this with backend to update student profile
-    showSnackbar("Profile saved successfully!", "success");
-  };
 
   return (
     <>
@@ -47,14 +38,10 @@ export default function StudentProfile() {
       {/* Profile Picture */}
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mb: 2 }}>
         <Avatar
-          src={profileData.photo}
+          src={mulogo}
           alt="Profile"
           sx={{ width: 100, height: 100, mb: 1 }}
         />
-        <Button variant="outlined" component="label" sx={{ width: { xs: "100%", sm: "auto" } }}>
-          Upload Picture
-          <input type="file" hidden onChange={handleImageChange} />
-        </Button>
       </Box>
 
       {/* Profile Info (Responsive) */}
@@ -82,15 +69,7 @@ export default function StudentProfile() {
         </Typography>
       </Box>
 
-      {/* Save Button */}
       <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-        <Button
-          variant="contained"
-          sx={{ bgcolor: "#2C2C78", width: { xs: "100%", sm: "auto" } }}
-          onClick={handleSave}
-        >
-          Save Profile
-        </Button>
       </Box>
     </Container>
     <Snackbar

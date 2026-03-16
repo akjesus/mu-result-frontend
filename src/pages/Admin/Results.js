@@ -19,6 +19,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
+  Input,
   MenuItem,
 } from "@mui/material";
 import { Edit, Delete, Visibility } from "@mui/icons-material";
@@ -28,7 +30,7 @@ import { getDepartments } from "../../api/departments";
 import {  getCourses } from "../../api/schools";
 import { getStudentsForDepartment } from "../../api/students";
 import { getSessionsWithSemesters } from "../../api/sessions";
-import {createResult} from "../../api/results";
+import {createResult, uploadBlockList} from "../../api/results";
 
 export default function ResultManagement() {
   const [search, setSearch] = useState("");
@@ -36,10 +38,9 @@ export default function ResultManagement() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [departments, setDepartments] = useState([]);
   const [openUploadModal, setOpenUploadModal] = useState(false);
-  const handleOpenUploadModal = () => {
-    setOpenUploadModal(true);
-  };
+  const [openBlockedlistModal, setOpenBlockedlistModal] = useState(false);
   const [openCreateResultModal, setOpenCreateResultModal] = useState(false);
+  const [blockedFile, setBlockedFile] = useState(null);
   const navigate = useNavigate();
   const [modalDepartments, setModalDepartments] = useState([]);
     const [modalStudents, setModalStudents] = useState([]);
@@ -54,7 +55,7 @@ export default function ResultManagement() {
     const [firstQuizScore, setFirstQuizScore] = useState("");
     const [secondQuizScore, setSecondQuizScore] = useState("");
     const [examScore, setExamScore] = useState("");
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+    const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
      
     const showSnackbar = (message, severity) => {
       setSnackbar({ open: true, message, severity });
@@ -63,6 +64,52 @@ export default function ResultManagement() {
     const handleCloseSnackbar = () => {
       setSnackbar({ ...snackbar, open: false });
     };
+    const handleOpenUploadModal = () => {
+    setOpenUploadModal(true);
+    };
+
+    const handleOpenBlockedlistModal = () => {
+    setOpenBlockedlistModal(true);
+    }
+    const handleCloseBlockedlistModal = () => {
+    setOpenBlockedlistModal(false);
+    setBlockedFile(null);
+    }
+    const handleBlockedFileChange = (e) => {
+    setBlockedFile(e.target.files[0]);
+    }
+    const handleUploadBlockedList = async () => {
+    if (!blockedFile) {
+      showSnackbar("Please select a file to upload.", "warning");
+      return;
+    }
+      const formData = new FormData();
+      formData.append("file", blockedFile);
+    try {
+          const res = await uploadBlockList(formData);
+          if(res.data.success) {
+            showSnackbar(res.data.message, "success");
+            setTimeout ( ()=> {
+              handleCloseBlockedlistModal();
+            }, 2500);
+            
+          }
+          
+            else {
+            showSnackbar(res.data.message, "error");
+            setTimeout ( ()=> {
+              handleCloseBlockedlistModal();
+            }, 2500);
+        }
+        } catch (err) {
+          showSnackbar(err.response?.data?.message || "Blocking failed", "error");
+          console.log("Bulk blocking failed:", err);
+          setTimeout ( ()=> {
+              handleCloseBlockedlistModal();
+            }, 2500);
+        }
+
+  }
 
   useEffect(() => {
       getDepartments()
@@ -77,14 +124,14 @@ export default function ResultManagement() {
       departments.name.toLowerCase().includes(search.toLowerCase()) ||
       departments.school.toLowerCase().includes(search.toLowerCase())
   );
-   const handleCreateResult = () => {
+  const handleCreateResult = () => {
       const data = {
         mat_no: selectedStudent,
         course_id: selectedCourse,
         session_id: selectedSession,
         semester_id: selectedSemester,
-        first_quiz_score: firstQuizScore,
-        second_quiz_score: secondQuizScore,
+        first_quiz: firstQuizScore,
+        second_quiz: secondQuizScore,
         exam_score: examScore,
       }
       createResult(data)
@@ -104,7 +151,7 @@ export default function ResultManagement() {
          handleCloseModal()
       })
     }
-      const handleCloseModal = ()=> {
+  const handleCloseModal = ()=> {
     setSelectedDepartment("");
       setSelectedStudent("");
       setSelectedCourse("");
@@ -173,7 +220,14 @@ export default function ResultManagement() {
       {/* Quick Navigation Buttons */}
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, mb: 3 }}>
         <Button variant="contained" sx={{ bgcolor: "#2C2C78", minWidth: { xs: 120, sm: 150 } }} onClick={() => setOpenCreateResultModal(true)}>Add Result</Button>
-  <Button variant="contained" sx={{ bgcolor: "#2C2C78", minWidth: { xs: 120, sm: 150 } }} onClick={handleOpenUploadModal}>Upload Results</Button>
+        <Button variant="contained" sx={{ bgcolor: "#2C2C78", minWidth: { xs: 120, sm: 150 } }} onClick={handleOpenUploadModal}>Upload Results</Button>
+        <Button
+          variant="contained"
+          sx={{ bgcolor: "#2C2C78", minWidth: { xs: 120, sm: 150 } }}
+          onClick={handleOpenBlockedlistModal}
+        >
+          Upload Blocked Students
+        </Button>
       </Box>
 
       {/* Search */}
@@ -387,6 +441,29 @@ export default function ResultManagement() {
               </DialogContent>
       </Dialog>
       <UploadResultsModal open={openUploadModal} handleClose={() => setOpenUploadModal(false)}/>
+      
+      {/* Blocked List Upload Modal */}
+      <Dialog open={openBlockedlistModal} onClose={handleCloseBlockedlistModal} maxWidth="xs" fullWidth>
+        <DialogTitle>Upload Blocked Students List</DialogTitle>
+        <DialogContent>
+          <Box display="flex" flexDirection="column" gap={2} mt={1}>
+            <Input
+              type="file"
+              inputProps={{ accept: ".csv,.xlsx" }}
+              onChange={handleBlockedFileChange}
+              fullWidth
+            />
+            <Typography variant="body2" color="text.secondary">
+              Upload a CSV or Excel file containing blocked students.
+            </Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseBlockedlistModal} color="secondary">Cancel</Button>
+          <Button variant="contained" color="primary" onClick={handleUploadBlockedList}>Upload</Button>
+        </DialogActions>
+      </Dialog>
+
              <Snackbar
                   open={snackbar.open}
                   autoHideDuration={3000}

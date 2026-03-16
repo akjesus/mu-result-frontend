@@ -40,6 +40,15 @@ export const bulkUploadResults = (formData) => {
   });
 };
 
+export const uploadBlockList = (formData) => {
+  const token = localStorage.getItem('token');
+  return axios.post(`${API_URL}/upload-blocklist`, formData, {
+    headers: {  
+      'Authorization': `Bearer ${token}`
+    }
+  });
+};
+
 export const getResultsByDepartment = (id, session, semester) => {
   const token = localStorage.getItem('token');
   return axios.get(`${API_URL}/departments/${id}`,
